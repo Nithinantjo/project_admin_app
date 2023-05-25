@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../api/api.dart';
 import 'addproductform.dart';
 
 class ProductPage extends StatefulWidget {
@@ -8,27 +9,13 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  final List<String> products = [
-    'Product 1',
-    'Product 2',
-    'Product 3',
-    'Product 4',
-    'Product 5',
-    'Product 6',
-    'Product 7',
-    'Product 8',
-    'Product 9',
-    'Product 10',
-    'Product 11',
-    'Product 12',
-    'Product 13',
-    'Product 14',
-    'Product 15',
-  ];
+  bool sear = true;
+  List prods = [];
 
   void _removeProduct(int index) {
+    APIService.removeprod(prods[index]['name']);
     setState(() {
-      products.removeAt(index);
+      prods.removeAt(index);
     });
   }
 
@@ -36,14 +23,42 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products'),
+        elevation: 0,
+        backgroundColor: Color(0xFFFCFAF8),
+        title: Container(
+          height: 45,
+          child: TextField(
+            onSubmitted: (value) async{
+              prods = await APIService.search(value);
+              print(prods);
+              setState(() {
+                sear = false;
+              });
+            },
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: const Color.fromARGB(255, 148, 146, 146),
+              contentPadding: const EdgeInsets.all(0),
+              prefixIcon: const Icon(Icons.search, color: Colors.black,),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50),
+                borderSide: BorderSide.none
+              ),
+              hintStyle: const TextStyle(
+                fontSize: 14,
+                color: Colors.black
+              ),
+              hintText: "Search items"
+            ),
+          ),
+        ),
       ),
-      body: GridView.count(
+      body:sear? const Center(child: Text('Search Here'),) : GridView.count(
         crossAxisCount: 2,
         childAspectRatio: 0.7,
         padding: EdgeInsets.all(16.0),
         children: List.generate(
-          products.length,
+          prods.length,
           (index) {
             return GestureDetector(
               onTap: () {
@@ -57,7 +72,7 @@ class _ProductPageState extends State<ProductPage> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Text(
-                        products[index],
+                        prods[index]['name'],
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -76,7 +91,7 @@ class _ProductPageState extends State<ProductPage> {
                       ),
                     ),
                     Text(
-                        'Rs. ${index * 100}',
+                        'Rs. ${prods[index]['price']}',
                         style: TextStyle(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,

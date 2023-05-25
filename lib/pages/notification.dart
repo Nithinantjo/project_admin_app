@@ -96,10 +96,9 @@ class _NotificationPageState extends State<NotificationPage> {
             ),
             OutlinedButton(
               child: const Text('Confirm'),
-              onPressed: () {
-                // Perform action on confirming the order
+              onPressed: () async {
+                await APIService.confirmnoti(customername);
                 Navigator.of(context).pop();
-                // Add your logic here for confirming the order
               },
             ),
           ],

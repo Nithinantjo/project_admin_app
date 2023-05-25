@@ -35,4 +35,35 @@ class APIService {
   }));
   return json.decode(response.body);
   }
+
+  static confirmnoti(String email) async {
+     Map<String, String> requestHeaders = {'Content-Type' : 'application/json'};
+     var response = await http.post(Uri.parse("$baseURL/confirmnoti"),
+     headers: requestHeaders,
+     body: jsonEncode({
+      "email": email
+     }));
+  }
+
+  static search(String prefix) async {
+    Map<String, String> requestHeaders = {'Content-Type' : 'application/json'};
+    var response = await http.post(Uri.parse("$baseURL/products"),
+    headers: requestHeaders,
+    body: jsonEncode({
+      "prefix": prefix
+    }));
+    if(response.body.isNotEmpty) {
+    return json.decode(response.body);
+  }
+  return {};
+  } 
+
+    static removeprod(String name) async {
+     Map<String, String> requestHeaders = {'Content-Type' : 'application/json'};
+     var response = await http.post(Uri.parse("$baseURL/removeprod"),
+     headers: requestHeaders,
+     body: jsonEncode({
+      "name": name
+     }));
+  }
 }
